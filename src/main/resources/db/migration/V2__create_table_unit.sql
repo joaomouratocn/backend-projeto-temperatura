@@ -1,4 +1,4 @@
-CREATE TABLE UNITS(
+CREATE TABLE units(
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name varchar(50) NOT NULL
+    name VARCHAR(50) NOT NULL
 );
