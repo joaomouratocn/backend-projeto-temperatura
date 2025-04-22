@@ -1,6 +1,7 @@
 package br.com.devjmcn.backend_projeto_temperatura.controller;
 
 import br.com.devjmcn.backend_projeto_temperatura.model.dtos.data.GetDataByUnitResponse;
+import br.com.devjmcn.backend_projeto_temperatura.model.dtos.data.GetDataIntervalDto;
 import br.com.devjmcn.backend_projeto_temperatura.model.dtos.data.SaveDataDto;
 import br.com.devjmcn.backend_projeto_temperatura.model.dtos.data.SaveResponseDto;
 import br.com.devjmcn.backend_projeto_temperatura.service.DataService;
@@ -29,6 +30,13 @@ public class DataController {
     @GetMapping("/{unitId}")
     public ResponseEntity<List<GetDataByUnitResponse>> getData(@PathVariable @Validated UUID unitId) {
         List<GetDataByUnitResponse> getDataByUnitResponseList = dataService.getDataByUnit(unitId);
+        return ResponseEntity.ok(getDataByUnitResponseList);
+    }
+
+    @GetMapping("/interval")
+    public ResponseEntity<List<GetDataByUnitResponse>> getDataInterval(@RequestBody @Validated GetDataIntervalDto getDataIntervalDto){
+        List<GetDataByUnitResponse> getDataByUnitResponseList =
+                dataService.getDataByUnit(getDataIntervalDto.unitId(), getDataIntervalDto.start(), getDataIntervalDto.end());
         return ResponseEntity.ok(getDataByUnitResponseList);
     }
 }
