@@ -31,10 +31,9 @@ public class UserEntity {
     @NotBlank
     String password;
     @NotNull
-    @NotBlank
-    String unit;
+    UUID unit;
 
-    public UserEntity(@NotNull @NotBlank String name, @NotNull @NotBlank String email, String passHash, @NotNull @NotBlank String unit) {
+    public UserEntity(@NotNull @NotBlank String name, @NotNull @NotBlank String email, String passHash, @NotNull @NotBlank UUID unit) {
         this.name = name;
         this.email = email;
         this.password = passHash;

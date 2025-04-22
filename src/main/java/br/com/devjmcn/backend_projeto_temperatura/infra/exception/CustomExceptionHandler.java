@@ -1,6 +1,8 @@
 package br.com.devjmcn.backend_projeto_temperatura.infra.exception;
 
+import br.com.devjmcn.backend_projeto_temperatura.infra.exception.custom.IncorrectPasswordException;
 import br.com.devjmcn.backend_projeto_temperatura.infra.exception.custom.NoDataFoundException;
+import br.com.devjmcn.backend_projeto_temperatura.infra.exception.custom.NotUserFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +37,18 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handlerDataIntegrityViolationException(DataIntegrityViolationException e) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(NotUserFoundException.class)
+    public ResponseEntity<ErrorResponse> handlerNotUserFoundException(NotUserFoundException e){
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler(IncorrectPasswordException.class)
+    public ResponseEntity<ErrorResponse> handlerIncorrectPasswordException(IncorrectPasswordException e){
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
