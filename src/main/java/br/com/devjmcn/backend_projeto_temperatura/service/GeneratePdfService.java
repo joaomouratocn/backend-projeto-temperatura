@@ -1,6 +1,5 @@
 package br.com.devjmcn.backend_projeto_temperatura.service;
 
-import br.com.devjmcn.backend_projeto_temperatura.model.dtos.data.GetDataByUnitResponse;
 import br.com.devjmcn.backend_projeto_temperatura.model.dtos.report.ReportDto;
 import br.com.devjmcn.backend_projeto_temperatura.util.FormatDate;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
@@ -16,7 +15,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class GeneratePdf {
+public class GeneratePdfService {
     @Autowired
     private TemplateEngine templateEngine;
     @Autowired

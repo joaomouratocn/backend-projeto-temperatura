@@ -99,7 +99,7 @@
 
   <h2 th:text="${unitName}">Unidade</h2>
   <p class="centered-text">
-    Período: <span th:text="${startDate}">01/04/2024</span> até <span th:text="${endDate}">22/04/2024</span>
+    Período: <span th:text="${startDate}"></span> até <span th:text="${endDate}"></span>
   </p>
 
   <table>
@@ -121,17 +121,16 @@
     </thead>
     <tbody>
       <tr th:each="item : ${data}">
-        <td th:text="${item.dateFormatted}">01/04/2024</td>
-        <td th:text="${item.refMin}">2.5</td>
-        <td th:text="${item.refCur}">3.1</td>
-        <td th:text="${item.refMax}">4.0</td>
-        <td th:text="${item.envMin}">20.0</td>
-        <td th:text="${item.envCur}">21.5</td>
-        <td th:text="${item.envMax}">23.0</td>
-        <td th:text="${item.userName}">João</td>
+        <td th:text="${item.dateFormatted}"></td>
+        <td th:text="${item.refMin}"></td>
+        <td th:text="${item.refCur}"></td>
+        <td th:text="${item.refMax}"></td>
+        <td th:text="${item.envMin}"></td>
+        <td th:text="${item.envCur}"></td>
+        <td th:text="${item.envMax}"></td>
+        <td th:text="${item.userName}"></td>
       </tr>
     </tbody>
   </table>
-
 </body>
 </html>
