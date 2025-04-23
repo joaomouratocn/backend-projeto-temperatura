@@ -1,0 +1,32 @@
+<div th:fragment="content">
+    <table>
+        <thead>
+        <tr>
+            <th rowspan="2">Data</th>
+            <th colspan="3">Geladeira</th>
+            <th colspan="3">Ambiente</th>
+            <th rowspan="2">Usuário</th>
+        </tr>
+        <tr>
+            <th>Mínimo</th>
+            <th>Atual</th>
+            <th>Máximo</th>
+            <th>Mínimo</th>
+            <th>Atual</th>
+            <th>Máximo</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${data}">
+            <td th:text="${item.dateFormatted}"></td>
+            <td th:text="${item.refMin}"></td>
+            <td th:text="${item.refCur}"></td>
+            <td th:text="${item.refMax}"></td>
+            <td th:text="${item.envMin}"></td>
+            <td th:text="${item.envCur}"></td>
+            <td th:text="${item.envMax}"></td>
+            <td th:text="${item.userName}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>

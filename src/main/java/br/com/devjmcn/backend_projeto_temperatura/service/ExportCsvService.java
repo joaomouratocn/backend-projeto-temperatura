@@ -1,6 +1,5 @@
 package br.com.devjmcn.backend_projeto_temperatura.service;
 
-import br.com.devjmcn.backend_projeto_temperatura.model.dtos.data.GetDataByUnitResponse;
 import br.com.devjmcn.backend_projeto_temperatura.model.dtos.report.ReportDto;
 import br.com.devjmcn.backend_projeto_temperatura.util.FormatDate;
 import org.apache.commons.csv.CSVFormat;
@@ -12,7 +11,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class ExportCsvService {
@@ -26,7 +24,7 @@ public class ExportCsvService {
                 .stream()
                 .map(item -> new ReportDto(item, formatDate)).toList();
 
-        try{
+        try {
             File tempFile = File.createTempFile("data", ".csv");
 
             try (

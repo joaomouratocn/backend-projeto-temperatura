@@ -31,4 +31,16 @@ public class ReportController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=relatorio.pdf")
                 .body(pdf);
     }
+
+    @GetMapping(value = "/pdf-all-units", produces = MediaType.APPLICATION_PDF_VALUE)
+    ResponseEntity<byte[]> generatePdfAllUnits(
+            @RequestParam @Validated long start,
+            @RequestParam @Validated long end
+    ){
+        byte[] pdf = generatePdfService.generateReport(start, end);
+
+        return  ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=relatorio.pdf")
+                .body(pdf);
+    }
 }
