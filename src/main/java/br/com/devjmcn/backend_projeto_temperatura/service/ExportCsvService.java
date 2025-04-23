@@ -8,8 +8,8 @@ import org.apache.commons.csv.CSVPrinter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileWriter;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -25,32 +25,39 @@ public class ExportCsvService {
         List<ReportDto> data = dataService.getDataByUnit(unitId)
                 .stream()
                 .map(item -> new ReportDto(item, formatDate)).toList();
-        try {
 
+        try{
             File tempFile = File.createTempFile("data", ".csv");
 
             try (
-                    FileWriter writer = new FileWriter(tempFile);
-                    CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT
-                            .withDelimiter(';')
-                            .withHeader("date", "refmin", "refcur", "refmax", "envmin", "envcur", "envmax", "username"))
+                    FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
+                    OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8);
+                    BufferedWriter writer = new BufferedWriter(outputStreamWriter)
             ) {
+                writer.write('\uFEFF');
 
+                CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL
+                        .withDelimiter(';')
+                        .withHeader("Data", "Geladeira Miníma", "Geladeira Atual", "Geladeira Maxíma", "Ambiente Miníma", "Ambiente Atual", "Ambiente Maxíma", "Usuário"));
 
                 for (ReportDto item : data) {
-                    csvPrinter.printRecord(item.dateFormatted());
-                    csvPrinter.printRecord(item.refMin());
-                    csvPrinter.printRecord(item.refCur());
-                    csvPrinter.printRecord(item.refMax());
-                    csvPrinter.printRecord(item.envMin());
-                    csvPrinter.printRecord(item.envCur());
-                    csvPrinter.printRecord(item.envMax());
-                    csvPrinter.printRecord(item.userName());
+                    csvPrinter.printRecord(
+                            item.dateFormatted(),
+                            item.refMin(),
+                            item.refCur(),
+                            item.refMax(),
+                            item.envMin(),
+                            item.envCur(),
+                            item.envMax(),
+                            item.userName()
+                    );
                 }
                 csvPrinter.flush();
+                return tempFile;
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
-            return tempFile;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
