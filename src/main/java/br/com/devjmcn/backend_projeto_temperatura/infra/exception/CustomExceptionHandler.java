@@ -1,11 +1,13 @@
 package br.com.devjmcn.backend_projeto_temperatura.infra.exception;
 
+import br.com.devjmcn.backend_projeto_temperatura.infra.exception.custom.EmailAlreadyRegisterException;
 import br.com.devjmcn.backend_projeto_temperatura.infra.exception.custom.IncorrectPasswordException;
 import br.com.devjmcn.backend_projeto_temperatura.infra.exception.custom.NoDataFoundException;
 import br.com.devjmcn.backend_projeto_temperatura.infra.exception.custom.NotUserFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -51,5 +53,11 @@ public class CustomExceptionHandler {
     public ResponseEntity<ErrorResponse> handlerIncorrectPasswordException(IncorrectPasswordException e){
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(EmailAlreadyRegisterException.class)
+    public ResponseEntity<ErrorResponse> handlerEmailAlreadyRegisterException(EmailAlreadyRegisterException e){
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.FORBIDDEN.value(), e.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
     }
 }

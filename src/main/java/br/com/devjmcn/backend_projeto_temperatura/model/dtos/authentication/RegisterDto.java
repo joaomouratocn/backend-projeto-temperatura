@@ -1,11 +1,12 @@
-package br.com.devjmcn.backend_projeto_temperatura.model.dtos.user;
+package br.com.devjmcn.backend_projeto_temperatura.model.dtos.authentication;
 
+import br.com.devjmcn.backend_projeto_temperatura.util.UserRoles;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
-public record SaveUserDto(
+public record RegisterDto(
         UUID id,
         @NotNull
         @NotBlank
@@ -17,5 +18,7 @@ public record SaveUserDto(
         @NotBlank
         String password,
         @NotNull
-        UUID unit
-){}
+        UUID unit,
+        @NotNull
+        UserRoles role
+) {}

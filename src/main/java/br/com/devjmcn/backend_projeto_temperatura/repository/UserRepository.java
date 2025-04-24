@@ -2,7 +2,6 @@ package br.com.devjmcn.backend_projeto_temperatura.repository;
 
 import br.com.devjmcn.backend_projeto_temperatura.model.entitys.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 import java.util.UUID;

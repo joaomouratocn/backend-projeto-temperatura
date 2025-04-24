@@ -3,7 +3,7 @@ CREATE TABLE users(
     name VARCHAR(50) NOT NULL,
     email VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(100) NOT NULL,
-    role INT NOT NULL DEFAULT 1,
+    role VARCHAR(10) NOT NULL,
     unit UUID NOT NULL,
 
     FOREIGN KEY (unit) REFERENCES units(id)
