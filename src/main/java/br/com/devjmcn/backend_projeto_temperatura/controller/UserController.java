@@ -15,13 +15,4 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    UserService userService;
-
-    @PostMapping("/save")
-    public ResponseEntity<RegisterResponseDto> saveUser(
-            @RequestBody @Validated RegisterDto registerDto) {
-        RegisterResponseDto userResponseDto = userService.updateUser(registerDto);
-        return ResponseEntity.ok(userResponseDto);
-    }
 }

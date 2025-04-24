@@ -23,6 +23,7 @@ public class TokenService {
             return JWT.create()
                     .withIssuer("bke-temperature")
                     .withSubject(userEntity.getEmail())
+                    .withClaim("role", userEntity.getRole().name())
                     .withExpiresAt(generateExpDate())
                     .sign(algorithm);
         } catch (JWTCreationException e) {
