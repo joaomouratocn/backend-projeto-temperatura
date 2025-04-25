@@ -24,6 +24,7 @@ public class TokenService {
                     .withIssuer("bke-temperature")
                     .withSubject(userEntity.getEmail())
                     .withClaim("role", userEntity.getRole().name())
+                    .withClaim("id", userEntity.getId().toString())
                     .withExpiresAt(generateExpDate())
                     .sign(algorithm);
         } catch (JWTCreationException e) {

@@ -17,7 +17,7 @@ public class FormatDate {
                 .toLocalDateTime();
 
         if(withHour){
-            formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm:ss");
+            formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         }else {
             formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         }

@@ -1,4 +1,4 @@
-package br.com.devjmcn.backend_projeto_temperatura.model.dtos.data;
+package br.com.devjmcn.backend_projeto_temperatura.model.data.dtos;
 
 public record TemperatureDataDto(
         String unitName,

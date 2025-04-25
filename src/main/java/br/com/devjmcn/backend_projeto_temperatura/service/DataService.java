@@ -1,18 +1,23 @@
 package br.com.devjmcn.backend_projeto_temperatura.service;
 
-import br.com.devjmcn.backend_projeto_temperatura.infra.exception.custom.NotUserFoundException;
-import br.com.devjmcn.backend_projeto_temperatura.model.dtos.data.GetDataByUnitResponse;
-import br.com.devjmcn.backend_projeto_temperatura.model.dtos.data.SaveDataDto;
-import br.com.devjmcn.backend_projeto_temperatura.model.dtos.data.SaveResponseDto;
-import br.com.devjmcn.backend_projeto_temperatura.model.entitys.DataEntity;
+import br.com.devjmcn.backend_projeto_temperatura.infra.exception.custom.UnitNotFoundException;
+import br.com.devjmcn.backend_projeto_temperatura.infra.exception.custom.UserNotFoundException;
+import br.com.devjmcn.backend_projeto_temperatura.infra.security.AuthenticatedUserProvider;
+import br.com.devjmcn.backend_projeto_temperatura.model.data.DataEntity;
+import br.com.devjmcn.backend_projeto_temperatura.model.data.GetDataByUnit;
+import br.com.devjmcn.backend_projeto_temperatura.model.data.dtos.GetDataByUnitResponseDto;
+import br.com.devjmcn.backend_projeto_temperatura.model.data.dtos.SaveDataDto;
+import br.com.devjmcn.backend_projeto_temperatura.model.data.dtos.SaveResponseDto;
 import br.com.devjmcn.backend_projeto_temperatura.model.entitys.UnitEntity;
 import br.com.devjmcn.backend_projeto_temperatura.model.entitys.UserEntity;
 import br.com.devjmcn.backend_projeto_temperatura.repository.DataRepository;
 import br.com.devjmcn.backend_projeto_temperatura.repository.UnitRepository;
 import br.com.devjmcn.backend_projeto_temperatura.repository.UserRepository;
+import br.com.devjmcn.backend_projeto_temperatura.util.FormatDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,16 +29,19 @@ public class DataService {
     UserRepository userRepository;
     @Autowired
     UnitRepository unitRepository;
+    @Autowired
+    AuthenticatedUserProvider authenticatedUserProvider;
+    @Autowired
+    FormatDate formatDate;
 
     public SaveResponseDto saveData(SaveDataDto saveDataDto) {
-        UserEntity user = userRepository.findById(saveDataDto.userId())
-                .orElseThrow(() -> new NotUserFoundException("User not found!!"));
+        UUID userId = authenticatedUserProvider.getUserId();
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
+        UnitEntity unitEntity = unitRepository.findById(userEntity.getUnit()).orElseThrow(() -> new UnitNotFoundException("Unit not found!"));
 
-        UnitEntity unit = unitRepository.findById(saveDataDto.unitId())
-                .orElseThrow(() -> new NotUserFoundException("Unit not found!"));
         DataEntity newData = new DataEntity(
-                user,
-                unit,
+                userEntity,
+                unitEntity,
                 saveDataDto.refMin(),
                 saveDataDto.refCur(),
                 saveDataDto.refMax(),
@@ -45,16 +53,38 @@ public class DataService {
 
         dataRepository.save(newData);
 
-        return new SaveResponseDto("OK", saveDataDto.dateTime());
+        return new SaveResponseDto("Dados enviados com sucesso", unitEntity.getId().toString());
     }
 
-    public List<GetDataByUnitResponse> getDataByUnit(UUID unitId, long start, long end) {
-        return dataRepository.getDataByUnit(unitId, start, end);
+    public List<GetDataByUnitResponseDto> getDataByUnit(UUID unitId, long start, long end) {
+        List<GetDataByUnit> getDataByUnitList = dataRepository.getDataByUnit(unitId, start, end);
+        return toGetDataByUnitResponseDto(getDataByUnitList);
     }
 
-    public List<GetDataByUnitResponse> getDataByUnit(UUID unitId) {
+    public List<GetDataByUnitResponseDto> getDataByUnit(UUID unitId) {
         long now = System.currentTimeMillis();
         long start = now - (5L * 24 * 60 * 60 * 1000);
-        return dataRepository.getDataByUnit(unitId, start, now);
+        List<GetDataByUnit> getDataByUnitList = dataRepository.getDataByUnit(unitId, start, now);
+        return toGetDataByUnitResponseDto(getDataByUnitList);
+    }
+
+    private List<GetDataByUnitResponseDto> toGetDataByUnitResponseDto(List<GetDataByUnit> getDataByUnitList) {
+        List<GetDataByUnitResponseDto> convertedList = new ArrayList<>();
+
+        for (GetDataByUnit item : getDataByUnitList) {
+            GetDataByUnitResponseDto converted = new GetDataByUnitResponseDto(
+                    formatDate.formatToDate(item.getDateTime(), true),
+                    String.valueOf(item.getRefMin()),
+                    String.valueOf(item.getRefCur()),
+                    String.valueOf(item.getRefMax()),
+                    String.valueOf(item.getEnvMin()),
+                    String.valueOf(item.getEnvCur()),
+                    String.valueOf(item.getEnvMax()),
+                    String.valueOf(item.getUserName())
+            );
+            convertedList.add(converted);
+        }
+
+        return convertedList;
     }
 }

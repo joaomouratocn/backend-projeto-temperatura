@@ -53,7 +53,7 @@ public class AuthService implements UserDetailsService {
 
             String token = tokenService.generateToken((UserEntity) authenticate.getPrincipal());
 
-            return new AuthResponseDto(auth.getName(), token);
+            return new AuthResponseDto(((UserEntity) authenticate.getPrincipal()).getName(), token);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

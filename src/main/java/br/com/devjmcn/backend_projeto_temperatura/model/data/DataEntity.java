@@ -1,5 +1,7 @@
-package br.com.devjmcn.backend_projeto_temperatura.model.entitys;
+package br.com.devjmcn.backend_projeto_temperatura.model.data;
 
+import br.com.devjmcn.backend_projeto_temperatura.model.entitys.UnitEntity;
+import br.com.devjmcn.backend_projeto_temperatura.model.entitys.UserEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

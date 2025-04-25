@@ -1,9 +1,10 @@
 package br.com.devjmcn.backend_projeto_temperatura.controller;
 
-import br.com.devjmcn.backend_projeto_temperatura.model.dtos.data.GetDataByUnitResponse;
-import br.com.devjmcn.backend_projeto_temperatura.model.dtos.data.GetDataIntervalDto;
-import br.com.devjmcn.backend_projeto_temperatura.model.dtos.data.SaveDataDto;
-import br.com.devjmcn.backend_projeto_temperatura.model.dtos.data.SaveResponseDto;
+import br.com.devjmcn.backend_projeto_temperatura.model.data.GetDataByUnit;
+import br.com.devjmcn.backend_projeto_temperatura.model.data.dtos.GetDataByUnitResponseDto;
+import br.com.devjmcn.backend_projeto_temperatura.model.data.dtos.GetDataIntervalDto;
+import br.com.devjmcn.backend_projeto_temperatura.model.data.dtos.SaveDataDto;
+import br.com.devjmcn.backend_projeto_temperatura.model.data.dtos.SaveResponseDto;
 import br.com.devjmcn.backend_projeto_temperatura.service.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,16 +28,16 @@ public class DataController {
         return ResponseEntity.ok(saveResponseDto);
     }
 
-    @GetMapping("/{unitId}")
-    public ResponseEntity<List<GetDataByUnitResponse>> getData(@PathVariable @Validated UUID unitId) {
-        List<GetDataByUnitResponse> getDataByUnitResponseList = dataService.getDataByUnit(unitId);
-        return ResponseEntity.ok(getDataByUnitResponseList);
+    @GetMapping("{id}")
+    public ResponseEntity<List<GetDataByUnitResponseDto>> getData(@PathVariable UUID id) {
+        List<GetDataByUnitResponseDto> getDataByUnitList = dataService.getDataByUnit(id);
+        return ResponseEntity.ok(getDataByUnitList);
     }
 
     @GetMapping("/interval")
-    public ResponseEntity<List<GetDataByUnitResponse>> getDataInterval(@RequestBody @Validated GetDataIntervalDto getDataIntervalDto){
-        List<GetDataByUnitResponse> getDataByUnitResponseList =
+    public ResponseEntity<List<GetDataByUnitResponseDto>> getDataInterval(@RequestBody @Validated GetDataIntervalDto getDataIntervalDto){
+        List<GetDataByUnitResponseDto> getDataByUnitList =
                 dataService.getDataByUnit(getDataIntervalDto.unitId(), getDataIntervalDto.start(), getDataIntervalDto.end());
-        return ResponseEntity.ok(getDataByUnitResponseList);
+        return ResponseEntity.ok(getDataByUnitList);
     }
 }
