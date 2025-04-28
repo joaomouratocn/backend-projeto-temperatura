@@ -1,6 +1,8 @@
 package br.com.devjmcn.backend_projeto_temperatura.controller;
 
+import br.com.devjmcn.backend_projeto_temperatura.model.data.dtos.GetDataIntervalDto;
 import br.com.devjmcn.backend_projeto_temperatura.service.GeneratePdfService;
+import br.com.devjmcn.backend_projeto_temperatura.util.FormatDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -19,13 +21,25 @@ public class ReportController {
     @Autowired
     GeneratePdfService generatePdfService;
 
+    @Autowired
+    FormatDate formatDate;
+
     @GetMapping(value = "/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> generatePdf(
-            @RequestParam @Validated long start,
-            @RequestParam @Validated long end,
-            @RequestParam @Validated UUID unit) {
+            @RequestParam @Validated String start,
+            @RequestParam @Validated String end,
+            @RequestParam @Validated UUID unitid) {
 
-        byte[] pdf = generatePdfService.generateReport(unit, start, end);
+        long convertedDateStart = formatDate.formatToMilli(start, false);
+        long convertedDateEnd = formatDate.formatToMilli(end, true);
+
+        GetDataIntervalDto getDataIntervalDto =
+                new GetDataIntervalDto(
+                        unitid,
+                        convertedDateStart,
+                        convertedDateEnd);
+
+        byte[] pdf = generatePdfService.generateReport(getDataIntervalDto);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=relatorio.pdf")
@@ -36,10 +50,10 @@ public class ReportController {
     ResponseEntity<byte[]> generatePdfAllUnits(
             @RequestParam @Validated long start,
             @RequestParam @Validated long end
-    ){
+    ) {
         byte[] pdf = generatePdfService.generateReport(start, end);
 
-        return  ResponseEntity.ok()
+        return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=relatorio.pdf")
                 .body(pdf);
     }

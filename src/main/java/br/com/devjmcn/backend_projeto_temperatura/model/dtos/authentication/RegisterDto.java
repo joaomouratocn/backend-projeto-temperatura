@@ -13,7 +13,7 @@ public record RegisterDto(
         String name,
         @NotNull
         @NotBlank
-        String email,
+        String username,
         @NotNull
         @NotBlank
         String password,

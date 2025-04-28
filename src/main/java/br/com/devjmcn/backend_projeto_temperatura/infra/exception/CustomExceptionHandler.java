@@ -4,6 +4,8 @@ import br.com.devjmcn.backend_projeto_temperatura.infra.exception.custom.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -59,6 +61,11 @@ public class CustomExceptionHandler {
     @ExceptionHandler(UnitNotFoundException.class)
     public ResponseEntity<ErrorResponse> handlerUnitNotFoundException(UnitNotFoundException e) {
         return buildErrorResponse(HttpStatus.NOT_FOUND, e.getMessage());
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handlerBadCredentialsException(BadCredentialsException e){
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 }
 

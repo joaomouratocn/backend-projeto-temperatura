@@ -7,7 +7,6 @@ import br.com.devjmcn.backend_projeto_temperatura.model.entitys.UserEntity;
 import br.com.devjmcn.backend_projeto_temperatura.repository.UserRepository;
 import br.com.devjmcn.backend_projeto_temperatura.util.UserRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,8 +17,8 @@ public class UserService {
     public RegisterResponseDto updateUser(RegisterDto registerDto) {
         UserEntity user = userRepository.findById(registerDto.id())
                 .orElseThrow(() -> new NotUserFoundException("User not found!"));
-        UserEntity updatedUser = new UserEntity(user.getId(), registerDto.name(), registerDto.email(), user.getPassword(), user.getUnit(), UserRoles.USER);
+        UserEntity updatedUser = new UserEntity(user.getId(), registerDto.name(), registerDto.username(), user.getPassword(), user.getUnit(), UserRoles.USER);
         userRepository.save(updatedUser);
-        return new RegisterResponseDto(updatedUser.getName(), updatedUser.getEmail());
+        return new RegisterResponseDto("Salvo com sucesso!");
     }
 }

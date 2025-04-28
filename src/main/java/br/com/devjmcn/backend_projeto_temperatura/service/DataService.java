@@ -6,6 +6,7 @@ import br.com.devjmcn.backend_projeto_temperatura.infra.security.AuthenticatedUs
 import br.com.devjmcn.backend_projeto_temperatura.model.data.DataEntity;
 import br.com.devjmcn.backend_projeto_temperatura.model.data.GetDataByUnit;
 import br.com.devjmcn.backend_projeto_temperatura.model.data.dtos.GetDataByUnitResponseDto;
+import br.com.devjmcn.backend_projeto_temperatura.model.data.dtos.GetDataIntervalDto;
 import br.com.devjmcn.backend_projeto_temperatura.model.data.dtos.SaveDataDto;
 import br.com.devjmcn.backend_projeto_temperatura.model.data.dtos.SaveResponseDto;
 import br.com.devjmcn.backend_projeto_temperatura.model.entitys.UnitEntity;
@@ -56,8 +57,11 @@ public class DataService {
         return new SaveResponseDto("Dados enviados com sucesso", unitEntity.getId().toString());
     }
 
-    public List<GetDataByUnitResponseDto> getDataByUnit(UUID unitId, long start, long end) {
-        List<GetDataByUnit> getDataByUnitList = dataRepository.getDataByUnit(unitId, start, end);
+    public List<GetDataByUnitResponseDto> getDataByUnit(GetDataIntervalDto getDataIntervalDto) {
+        List<GetDataByUnit> getDataByUnitList = dataRepository.getDataByUnit(
+                getDataIntervalDto.unitId(),
+                getDataIntervalDto.start(),
+                getDataIntervalDto.end());
         return toGetDataByUnitResponseDto(getDataByUnitList);
     }
 

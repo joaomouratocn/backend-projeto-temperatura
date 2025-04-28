@@ -10,6 +10,7 @@ import br.com.devjmcn.backend_projeto_temperatura.model.entitys.UserEntity;
 import br.com.devjmcn.backend_projeto_temperatura.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.Authentication;
@@ -39,7 +40,7 @@ public class AuthService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return userRepository.findByUsername(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     public AuthResponseDto auth(AuthDto authDto) {
@@ -47,20 +48,22 @@ public class AuthService implements UserDetailsService {
             AuthenticationManager authenticationManager = authenticationConfiguration.getAuthenticationManager();
 
             UsernamePasswordAuthenticationToken auth =
-                    new UsernamePasswordAuthenticationToken(authDto.email(), authDto.password());
+                    new UsernamePasswordAuthenticationToken(authDto.username(), authDto.password());
 
             Authentication authenticate = authenticationManager.authenticate(auth);
 
             String token = tokenService.generateToken((UserEntity) authenticate.getPrincipal());
 
             return new AuthResponseDto(((UserEntity) authenticate.getPrincipal()).getName(), token);
-        } catch (Exception e) {
+        } catch (BadCredentialsException e) {
+            throw e;
+        }catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     public RegisterResponseDto register(RegisterDto registerDto) {
-        if (userRepository.findByEmail(registerDto.email()).isPresent()) {
+        if (userRepository.findByUsername(registerDto.username()).isPresent()) {
             throw new EmailAlreadyRegisterException("Email already exists");
         }
 
@@ -68,7 +71,7 @@ public class AuthService implements UserDetailsService {
 
         UserEntity newUser = new UserEntity(
                 registerDto.name(),
-                registerDto.email(),
+                registerDto.username(),
                 encryptedPassword,
                 registerDto.unit(),
                 registerDto.role()
@@ -76,6 +79,6 @@ public class AuthService implements UserDetailsService {
 
         userRepository.save(newUser);
 
-        return new RegisterResponseDto(newUser.getName(), newUser.getEmail());
+        return new RegisterResponseDto("Salvo com sucesso!");
     }
 }

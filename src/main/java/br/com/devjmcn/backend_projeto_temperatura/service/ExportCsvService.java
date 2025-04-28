@@ -40,14 +40,14 @@ public class ExportCsvService {
 
                 for (ReportDto item : data) {
                     csvPrinter.printRecord(
-                            item.dateFormatted(),
+                            item.date(),
                             item.refMin(),
                             item.refCur(),
                             item.refMax(),
                             item.envMin(),
                             item.envCur(),
                             item.envMax(),
-                            item.userName()
+                            item.username()
                     );
                 }
                 csvPrinter.flush();

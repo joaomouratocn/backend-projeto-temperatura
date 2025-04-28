@@ -32,8 +32,8 @@ public class SecurityFilter extends OncePerRequestFilter {
         String token = recoverToken(request);
 
         if(token != null){
-            String email = tokenService.validateToken(token);
-            UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Error find user(filter chain)"));
+            String username = tokenService.validateToken(token);
+            UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Error find user(filter chain)"));
 
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                     new UsernamePasswordAuthenticationToken(userEntity, null, userEntity.getAuthorities());

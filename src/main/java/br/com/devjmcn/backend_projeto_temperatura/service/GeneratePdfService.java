@@ -1,5 +1,6 @@
 package br.com.devjmcn.backend_projeto_temperatura.service;
 
+import br.com.devjmcn.backend_projeto_temperatura.model.data.dtos.GetDataIntervalDto;
 import br.com.devjmcn.backend_projeto_temperatura.model.dtos.report.ReportDto;
 import br.com.devjmcn.backend_projeto_temperatura.model.dtos.unit.UnitDto;
 import br.com.devjmcn.backend_projeto_temperatura.util.FormatDate;
@@ -29,15 +30,18 @@ public class GeneratePdfService {
     private FormatDate formatDate;
 
 
-    public byte[] generateReport(UUID unitId, long start, long end) {
-        String unitName = unitService.getUnit(unitId).name();
-        List<ReportDto> data = dataService.getDataByUnit(unitId, start, end).stream().map(item -> new ReportDto(item, formatDate)).toList();
+    public byte[] generateReport(GetDataIntervalDto getDataIntervalDto) {
+        String unitName = unitService.getUnit(getDataIntervalDto.unitId()).name();
+        List<ReportDto> data = dataService.getDataByUnit(getDataIntervalDto)
+                .stream()
+                .map(item -> new ReportDto(item, formatDate))
+                .toList();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         Context context = new Context();
         context.setVariable("unitName", unitName);
-        context.setVariable("startDate", formatDate.formatToDate(start, false));
-        context.setVariable("endDate", formatDate.formatToDate(end, false));
+        context.setVariable("startDate", formatDate.formatToDate(getDataIntervalDto.start(), false));
+        context.setVariable("endDate", formatDate.formatToDate(getDataIntervalDto.end(), false));
         context.setVariable("generationTime", formatDate.formatToDate(System.currentTimeMillis(), true));
         if (!data.isEmpty()) {
             context.setVariable("data", data);
@@ -69,8 +73,10 @@ public class GeneratePdfService {
         merger.setDestinationStream(finalOutput);
 
         for (UUID unitId : unitIdList) {
+            GetDataIntervalDto getDataIntervalDto = new GetDataIntervalDto(unitId, start, end);
+
             String unitName = unitService.getUnit(unitId).name();
-            List<ReportDto> data = dataService.getDataByUnit(unitId, start, end)
+            List<ReportDto> data = dataService.getDataByUnit(getDataIntervalDto)
                     .stream()
                     .map(item -> new ReportDto(item, formatDate))
                     .toList();

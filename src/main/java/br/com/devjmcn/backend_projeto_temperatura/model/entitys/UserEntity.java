@@ -32,7 +32,7 @@ public class UserEntity implements UserDetails {
     String name;
     @NotNull
     @NotBlank
-    String email;
+    String username;
     @NotNull
     @NotBlank
     String password;
@@ -43,13 +43,13 @@ public class UserEntity implements UserDetails {
 
     public UserEntity(
             @NotNull @NotBlank String name,
-            @NotNull @NotBlank String email,
+            @NotNull @NotBlank String username,
             @NotNull @NotBlank String passHash,
             @NotNull UUID unit,
             @NotNull UserRoles role
     ) {
         this.name = name;
-        this.email = email;
+        this.username = username;
         this.password = passHash;
         this.unit = unit;
         this.role = role;
@@ -66,7 +66,7 @@ public class UserEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override

@@ -8,7 +8,7 @@ CREATE TABLE data(
     env_min NUMERIC NOT NULL,
     env_cur NUMERIC NOT NULL,
     env_max NUMERIC NOT NULL,
-    date_time NUMERIC NOT NULL,
+    date_time BIGINT NOT NULL,
 
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id),
     CONSTRAINT fk_unit FOREIGN KEY (unit_id) REFERENCES units(id)

@@ -22,7 +22,7 @@ public class TokenService {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.create()
                     .withIssuer("bke-temperature")
-                    .withSubject(userEntity.getEmail())
+                    .withSubject(userEntity.getUsername())
                     .withClaim("role", userEntity.getRole().name())
                     .withClaim("id", userEntity.getId().toString())
                     .withExpiresAt(generateExpDate())

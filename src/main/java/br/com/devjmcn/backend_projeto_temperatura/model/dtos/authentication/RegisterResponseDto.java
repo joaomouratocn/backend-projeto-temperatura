@@ -6,8 +6,5 @@ import jakarta.validation.constraints.NotNull;
 public record RegisterResponseDto(
         @NotNull
         @NotBlank
-        String name,
-        @NotNull
-        @NotBlank
-        String email
-){}
+        String message
+) {}
