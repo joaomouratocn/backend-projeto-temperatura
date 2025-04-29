@@ -32,9 +32,9 @@ public class UnitController {
         return ResponseEntity.ok(unitDto);
     }
 
-    @GetMapping("/userid/{id}")
-    public ResponseEntity<UnitDto> getUnitByUser(@PathVariable @Validated UUID id){
-        UnitDto unitDto = unitservice.getUnitByUser(id);
+    @GetMapping("/byuser")
+    public ResponseEntity<UnitDto> getUnitByUser(){
+        UnitDto unitDto = unitservice.getUnitByUser();
         return ResponseEntity.ok(unitDto);
     }
 }
