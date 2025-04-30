@@ -65,7 +65,7 @@ public class GeneratePdfService {
         return outputStream.toByteArray();
     }
 
-    public byte[] generateReport(long start, long end) {
+    public byte[] generateReportAll(GetDataIntervalDto received) {
         List<UUID> unitIdList = unitService.getAllUnits().stream().map(UnitDto::id).toList();
 
         PDFMergerUtility merger = new PDFMergerUtility();
@@ -73,7 +73,7 @@ public class GeneratePdfService {
         merger.setDestinationStream(finalOutput);
 
         for (UUID unitId : unitIdList) {
-            GetDataIntervalDto getDataIntervalDto = new GetDataIntervalDto(unitId, start, end);
+            GetDataIntervalDto getDataIntervalDto = new GetDataIntervalDto(unitId, received.start(), received.end());
 
             String unitName = unitService.getUnit(unitId).name();
             List<ReportDto> data = dataService.getDataByUnit(getDataIntervalDto)
@@ -83,8 +83,8 @@ public class GeneratePdfService {
 
             Context context = new Context();
             context.setVariable("unitName", unitName);
-            context.setVariable("startDate", formatDate.formatToDate(start, false));
-            context.setVariable("endDate", formatDate.formatToDate(end, false));
+            context.setVariable("startDate", formatDate.formatToDate(received.start(), false));
+            context.setVariable("endDate", formatDate.formatToDate(received.end(), false));
             context.setVariable("generationTime", formatDate.formatToDate(System.currentTimeMillis(), true));
             if (!data.isEmpty()) {
                 context.setVariable("data", data);

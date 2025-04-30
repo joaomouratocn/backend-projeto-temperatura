@@ -33,13 +33,13 @@ public class ReportController {
         long convertedDateStart = formatDate.formatToMilli(start, false);
         long convertedDateEnd = formatDate.formatToMilli(end, true);
 
-        GetDataIntervalDto getDataIntervalDto =
+        GetDataIntervalDto received =
                 new GetDataIntervalDto(
                         unitid,
                         convertedDateStart,
                         convertedDateEnd);
 
-        byte[] pdf = generatePdfService.generateReport(getDataIntervalDto);
+        byte[] pdf = generatePdfService.generateReport(received);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=relatorio.pdf")
@@ -48,10 +48,19 @@ public class ReportController {
 
     @GetMapping(value = "/pdf-all-units", produces = MediaType.APPLICATION_PDF_VALUE)
     ResponseEntity<byte[]> generatePdfAllUnits(
-            @RequestParam @Validated long start,
-            @RequestParam @Validated long end
+            @RequestParam @Validated String start,
+            @RequestParam @Validated String end
     ) {
-        byte[] pdf = generatePdfService.generateReport(start, end);
+        long convertedDateStart = formatDate.formatToMilli(start, false);
+        long convertedDateEnd = formatDate.formatToMilli(end, true);
+
+        GetDataIntervalDto received =
+                new GetDataIntervalDto(
+                        null,
+                        convertedDateStart,
+                        convertedDateEnd);
+
+        byte[] pdf = generatePdfService.generateReportAll(received);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=relatorio.pdf")
