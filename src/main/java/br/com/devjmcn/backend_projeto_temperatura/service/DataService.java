@@ -15,6 +15,7 @@ import br.com.devjmcn.backend_projeto_temperatura.repository.DataRepository;
 import br.com.devjmcn.backend_projeto_temperatura.repository.UnitRepository;
 import br.com.devjmcn.backend_projeto_temperatura.repository.UserRepository;
 import br.com.devjmcn.backend_projeto_temperatura.util.FormatDate;
+import br.com.devjmcn.backend_projeto_temperatura.util.UserRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,8 +38,18 @@ public class DataService {
 
     public SaveResponseDto saveData(SaveDataDto saveDataDto) {
         UUID userId = authenticatedUserProvider.getUserId();
-        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
-        UnitEntity unitEntity = unitRepository.findById(userEntity.getUnit()).orElseThrow(() -> new UnitNotFoundException("Unit not found!"));
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        boolean isAdmin = userEntity.getRole() == UserRoles.ADMIN;
+        boolean isSameUnit = userEntity.getUnit().equals(saveDataDto.unitId());
+
+        if (!isAdmin && !isSameUnit) {
+            throw new RuntimeException("Usuário não tem permissão para inserir os dados nesta unidade");
+        }
+
+        UnitEntity unitEntity = unitRepository.findById(saveDataDto.unitId())
+                .orElseThrow(() -> new UnitNotFoundException("Unit not found!"));
 
         DataEntity newData = new DataEntity(
                 userEntity,
@@ -53,7 +64,6 @@ public class DataService {
         );
 
         dataRepository.save(newData);
-
         return new SaveResponseDto("Dados enviados com sucesso", unitEntity.getId().toString());
     }
 

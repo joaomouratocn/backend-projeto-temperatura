@@ -1,6 +1,6 @@
 package br.com.devjmcn.backend_projeto_temperatura.service;
 
-import br.com.devjmcn.backend_projeto_temperatura.infra.exception.custom.EmailAlreadyRegisterException;
+import br.com.devjmcn.backend_projeto_temperatura.infra.exception.custom.UserNameAlreadyRegisterException;
 import br.com.devjmcn.backend_projeto_temperatura.infra.security.TokenService;
 import br.com.devjmcn.backend_projeto_temperatura.model.dtos.authentication.AuthDto;
 import br.com.devjmcn.backend_projeto_temperatura.model.dtos.authentication.AuthResponseDto;
@@ -8,6 +8,7 @@ import br.com.devjmcn.backend_projeto_temperatura.model.dtos.authentication.Regi
 import br.com.devjmcn.backend_projeto_temperatura.model.dtos.authentication.RegisterResponseDto;
 import br.com.devjmcn.backend_projeto_temperatura.model.entitys.UserEntity;
 import br.com.devjmcn.backend_projeto_temperatura.repository.UserRepository;
+import br.com.devjmcn.backend_projeto_temperatura.util.UserRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -64,21 +65,21 @@ public class AuthService implements UserDetailsService {
 
     public RegisterResponseDto register(RegisterDto registerDto) {
         if (userRepository.findByUsername(registerDto.username()).isPresent()) {
-            throw new EmailAlreadyRegisterException("Email already exists");
+            throw new UserNameAlreadyRegisterException("Usuário já cadastrado");
         }
 
-        String encryptedPassword = passwordEncoder.encode(registerDto.password());
+        String encryptedPassword = passwordEncoder.encode("A8O3J0S2");
 
         UserEntity newUser = new UserEntity(
                 registerDto.name(),
                 registerDto.username(),
                 encryptedPassword,
                 registerDto.unit(),
-                registerDto.role()
+                UserRoles.USER
         );
 
         userRepository.save(newUser);
 
-        return new RegisterResponseDto("Salvo com sucesso!");
+        return new RegisterResponseDto("Cadastrado com sucesso");
     }
 }

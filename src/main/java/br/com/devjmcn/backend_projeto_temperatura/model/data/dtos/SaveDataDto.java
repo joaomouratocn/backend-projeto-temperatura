@@ -2,7 +2,13 @@ package br.com.devjmcn.backend_projeto_temperatura.model.data.dtos;
 
 import jakarta.validation.constraints.NotNull;
 
+import java.util.UUID;
+
 public record SaveDataDto(
+        @NotNull
+        long dateTime,
+        @NotNull
+        UUID unitId,
         @NotNull
         double refMin,
         @NotNull
@@ -14,7 +20,6 @@ public record SaveDataDto(
         @NotNull
         double envCur,
         @NotNull
-        double envMax,
-        @NotNull
-        long dateTime
-){}
+        double envMax
+) {
+}

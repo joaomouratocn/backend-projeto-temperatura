@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
 public record RegisterDto(
-        UUID id,
         @NotNull
         @NotBlank
         String name,
@@ -15,10 +14,5 @@ public record RegisterDto(
         @NotBlank
         String username,
         @NotNull
-        @NotBlank
-        String password,
-        @NotNull
-        UUID unit,
-        @NotNull
-        UserRoles role
+        UUID unit
 ) {}
