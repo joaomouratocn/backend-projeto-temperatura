@@ -8,6 +8,7 @@ import br.com.devjmcn.backend_projeto_temperatura.model.dtos.authentication.Regi
 import br.com.devjmcn.backend_projeto_temperatura.model.dtos.authentication.RegisterResponseDto;
 import br.com.devjmcn.backend_projeto_temperatura.model.entitys.UserEntity;
 import br.com.devjmcn.backend_projeto_temperatura.repository.UserRepository;
+import br.com.devjmcn.backend_projeto_temperatura.util.ClearText;
 import br.com.devjmcn.backend_projeto_temperatura.util.UserRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,6 +33,9 @@ public class AuthService implements UserDetailsService {
 
     @Autowired
     TokenService tokenService;
+
+    @Autowired
+    ClearText clearText;
 
     private final AuthenticationConfiguration authenticationConfiguration;
 
@@ -71,8 +75,8 @@ public class AuthService implements UserDetailsService {
         String encryptedPassword = passwordEncoder.encode("A8O3J0S2");
 
         UserEntity newUser = new UserEntity(
-                registerDto.name(),
-                registerDto.username(),
+                clearText.normalizeText(registerDto.name().toUpperCase()),
+                clearText.normalizeText(registerDto.username().toUpperCase()),
                 encryptedPassword,
                 registerDto.unit(),
                 UserRoles.USER
