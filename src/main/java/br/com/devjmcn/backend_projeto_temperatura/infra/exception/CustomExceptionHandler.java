@@ -5,16 +5,16 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class CustomExceptionHandler {
 
     private ResponseEntity<ErrorResponse> buildErrorResponse(HttpStatus status, String message) {
         ErrorResponse errorResponse = new ErrorResponse(status.value(), message);
-        return ResponseEntity.status(status).body(errorResponse);
+        return new ResponseEntity<>(errorResponse, status);
     }
 
     @ExceptionHandler(Exception.class)
@@ -63,8 +63,13 @@ public class CustomExceptionHandler {
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ErrorResponse> handlerBadCredentialsException(BadCredentialsException e){
+    public ResponseEntity<ErrorResponse> handlerBadCredentialsException(BadCredentialsException e) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler(RegisterNewPasswordException.class)
+    public ResponseEntity<ErrorResponse> handlerRegisterNewPasswordException(RegisterNewPasswordException e) {
+        return buildErrorResponse(HttpStatus.PRECONDITION_REQUIRED, e.getMessage());
     }
 }
 

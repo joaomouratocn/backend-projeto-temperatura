@@ -9,5 +9,7 @@ public record AuthResponseDto(
         String name,
         @NotNull
         @NotBlank
-        String token
+        String token,
+        @NotNull
+        boolean mustChange
 ){}

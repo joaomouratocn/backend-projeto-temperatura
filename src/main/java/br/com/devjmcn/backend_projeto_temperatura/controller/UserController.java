@@ -3,6 +3,7 @@ package br.com.devjmcn.backend_projeto_temperatura.controller;
 import br.com.devjmcn.backend_projeto_temperatura.model.dtos.authentication.RegisterDto;
 import br.com.devjmcn.backend_projeto_temperatura.model.dtos.authentication.RegisterResponseDto;
 import br.com.devjmcn.backend_projeto_temperatura.model.dtos.user.NewPassDto;
+import br.com.devjmcn.backend_projeto_temperatura.model.dtos.user.NewPassResponseSuccess;
 import br.com.devjmcn.backend_projeto_temperatura.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +18,8 @@ public class UserController {
     UserService userService;
 
     @PatchMapping("/updatepass")
-    public ResponseEntity<String> updatePass(@RequestBody @Validated NewPassDto newPassDto){
-        String response = userService.updatePass(newPassDto);
+    public ResponseEntity<NewPassResponseSuccess> updatePass(@RequestBody @Validated NewPassDto newPassDto){
+        NewPassResponseSuccess response = userService.updatePass(newPassDto);
 
         return ResponseEntity.ok(response);
     }

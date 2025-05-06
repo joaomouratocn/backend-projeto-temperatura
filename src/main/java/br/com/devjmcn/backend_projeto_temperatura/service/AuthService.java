@@ -1,5 +1,6 @@
 package br.com.devjmcn.backend_projeto_temperatura.service;
 
+import br.com.devjmcn.backend_projeto_temperatura.infra.exception.custom.RegisterNewPasswordException;
 import br.com.devjmcn.backend_projeto_temperatura.infra.exception.custom.UserNameAlreadyRegisterException;
 import br.com.devjmcn.backend_projeto_temperatura.infra.security.TokenService;
 import br.com.devjmcn.backend_projeto_temperatura.model.dtos.authentication.AuthDto;
@@ -11,6 +12,7 @@ import br.com.devjmcn.backend_projeto_temperatura.repository.UserRepository;
 import br.com.devjmcn.backend_projeto_temperatura.util.ClearText;
 import br.com.devjmcn.backend_projeto_temperatura.util.UserRoles;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +26,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService implements UserDetailsService {
+    @Value("${api.secret.pass.default}")
+    private String passDefault;
 
     @Autowired
     UserRepository userRepository;
@@ -44,12 +48,14 @@ public class AuthService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByUsername(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     public AuthResponseDto auth(AuthDto authDto) {
         try {
+            boolean mustPass = false;
+
             AuthenticationManager authenticationManager = authenticationConfiguration.getAuthenticationManager();
 
             UsernamePasswordAuthenticationToken auth =
@@ -59,10 +65,12 @@ public class AuthService implements UserDetailsService {
 
             String token = tokenService.generateToken((UserEntity) authenticate.getPrincipal());
 
-            return new AuthResponseDto(((UserEntity) authenticate.getPrincipal()).getName(), token);
+            if (passDefault.equals(authDto.password())){mustPass = true;}
+
+            return new AuthResponseDto(((UserEntity) authenticate.getPrincipal()).getName(), token, mustPass);
         } catch (BadCredentialsException e) {
             throw e;
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -72,7 +80,7 @@ public class AuthService implements UserDetailsService {
             throw new UserNameAlreadyRegisterException("Usuário já cadastrado");
         }
 
-        String encryptedPassword = passwordEncoder.encode("A8O3J0S2");
+        String encryptedPassword = passwordEncoder.encode(passDefault);
 
         UserEntity newUser = new UserEntity(
                 clearText.normalizeText(registerDto.name().toUpperCase()),

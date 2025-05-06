@@ -3,13 +3,13 @@ package br.com.devjmcn.backend_projeto_temperatura.service;
 import br.com.devjmcn.backend_projeto_temperatura.infra.exception.custom.UserNotFoundException;
 import br.com.devjmcn.backend_projeto_temperatura.infra.security.AuthenticatedUserProvider;
 import br.com.devjmcn.backend_projeto_temperatura.model.dtos.user.NewPassDto;
+import br.com.devjmcn.backend_projeto_temperatura.model.dtos.user.NewPassResponseSuccess;
 import br.com.devjmcn.backend_projeto_temperatura.model.entitys.UserEntity;
 import br.com.devjmcn.backend_projeto_temperatura.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -23,19 +23,23 @@ public class UserService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    public String updatePass(NewPassDto newPassDto) {
+    public NewPassResponseSuccess updatePass(NewPassDto newPassDto) {
         UUID idAuthUser = authenticatedUserProvider.getUserId();
 
         UserEntity userEntity = userRepository.findById(idAuthUser).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
-        String passHash = passwordEncoder.encode(newPassDto.currentPass());
+        boolean matches = passwordEncoder.matches(newPassDto.currentPass(), userEntity.getPassword());
 
-        if (passHash != userEntity.getPassword()) {
+        if (!matches) {
             throw new RuntimeException("Senha atual invalída");
         }
 
+        String passHash = passwordEncoder.encode(newPassDto.newPass());
+
         userEntity.setPassword(passHash);
 
-        return "Senha atualizada com sucesso";
+        userRepository.save(userEntity);
+
+        return new NewPassResponseSuccess("Senha atualizada com sucesso");
     }
 }
