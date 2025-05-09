@@ -12,12 +12,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
     @Autowired
     UserService userService;
 
-    @PatchMapping("/api/updatepass")
+    @PatchMapping("/updatepass")
     public ResponseEntity<NewPassResponseSuccess> updatePass(@RequestBody @Validated NewPassDto newPassDto){
         NewPassResponseSuccess response = userService.updatePass(newPassDto);
 

@@ -34,6 +34,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorized -> authorized
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/units/byuser").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/api/report/pdf").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/api/data/**").hasRole("USER")
                         .requestMatchers(HttpMethod.GET, "/api/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
@@ -45,7 +48,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("temperatura.devjmcn.com.br"));
+        config.setAllowedOrigins(List.of("https://temp.devjmcn.com.br"));
         config.setAllowedMethods(List.of("GET", "POST", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);

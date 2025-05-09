@@ -21,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -59,7 +60,7 @@ public class AuthService implements UserDetailsService {
             AuthenticationManager authenticationManager = authenticationConfiguration.getAuthenticationManager();
 
             UsernamePasswordAuthenticationToken auth =
-                    new UsernamePasswordAuthenticationToken(authDto.username(), authDto.password());
+                    new UsernamePasswordAuthenticationToken(authDto.username().toUpperCase(), authDto.password());
 
             Authentication authenticate = authenticationManager.authenticate(auth);
 
