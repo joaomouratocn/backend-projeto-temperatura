@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/data")
+@RequestMapping("/api/data")
 public class DataController {
 
     @Autowired

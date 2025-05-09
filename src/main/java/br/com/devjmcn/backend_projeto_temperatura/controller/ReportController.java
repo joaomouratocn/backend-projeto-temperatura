@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/report")
+@RequestMapping("/api/report")
 public class ReportController {
     @Autowired
     GeneratePdfService generatePdfService;

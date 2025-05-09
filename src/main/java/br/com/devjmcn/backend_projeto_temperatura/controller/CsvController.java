@@ -16,7 +16,7 @@ import java.io.File;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/export-csv")
+@RequestMapping("/api/export-csv")
 public class CsvController {
     @Autowired
     ExportCsvService exportCsvService;

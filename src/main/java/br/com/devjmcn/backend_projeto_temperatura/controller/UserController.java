@@ -17,7 +17,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @PatchMapping("/updatepass")
+    @PatchMapping("/api/updatepass")
     public ResponseEntity<NewPassResponseSuccess> updatePass(@RequestBody @Validated NewPassDto newPassDto){
         NewPassResponseSuccess response = userService.updatePass(newPassDto);
 

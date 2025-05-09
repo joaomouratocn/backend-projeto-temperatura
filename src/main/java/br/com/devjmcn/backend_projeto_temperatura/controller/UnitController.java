@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("units")
+@RequestMapping("/api/units")
 public class UnitController {
 
     @Autowired
