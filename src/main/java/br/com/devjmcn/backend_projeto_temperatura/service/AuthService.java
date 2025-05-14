@@ -1,7 +1,7 @@
 package br.com.devjmcn.backend_projeto_temperatura.service;
 
-import br.com.devjmcn.backend_projeto_temperatura.infra.exception.custom.RegisterNewPasswordException;
 import br.com.devjmcn.backend_projeto_temperatura.infra.exception.custom.UserNameAlreadyRegisterException;
+import br.com.devjmcn.backend_projeto_temperatura.infra.security.PasswordHashGenerator;
 import br.com.devjmcn.backend_projeto_temperatura.infra.security.TokenService;
 import br.com.devjmcn.backend_projeto_temperatura.model.dtos.authentication.AuthDto;
 import br.com.devjmcn.backend_projeto_temperatura.model.dtos.authentication.AuthResponseDto;
@@ -21,8 +21,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,7 +32,7 @@ public class AuthService implements UserDetailsService {
     UserRepository userRepository;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    PasswordHashGenerator passwordHashGenerator;
 
     @Autowired
     TokenService tokenService;
@@ -66,7 +64,9 @@ public class AuthService implements UserDetailsService {
 
             String token = tokenService.generateToken((UserEntity) authenticate.getPrincipal());
 
-            if (passDefault.equals(authDto.password())){mustPass = true;}
+            if (passDefault.equals(authDto.password())) {
+                mustPass = true;
+            }
 
             return new AuthResponseDto(((UserEntity) authenticate.getPrincipal()).getName(), token, mustPass);
         } catch (BadCredentialsException e) {
@@ -81,7 +81,7 @@ public class AuthService implements UserDetailsService {
             throw new UserNameAlreadyRegisterException("Usuário já cadastrado");
         }
 
-        String encryptedPassword = passwordEncoder.encode(passDefault);
+        String encryptedPassword = passwordHashGenerator.generateHash(passDefault);
 
         UserEntity newUser = new UserEntity(
                 clearText.normalizeText(registerDto.name().toUpperCase()),

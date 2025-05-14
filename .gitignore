@@ -19,6 +19,7 @@ target/
 *.iml
 *.ipr
 application-dev.properties
+backend-temperatura.tar
 
 ### NetBeans ###
 /nbproject/private/
