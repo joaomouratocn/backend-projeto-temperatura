@@ -13,10 +13,10 @@ import br.com.devjmcn.backend_projeto_temperatura.util.ClearText;
 import br.com.devjmcn.backend_projeto_temperatura.util.UserRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -40,10 +40,10 @@ public class AuthService implements UserDetailsService {
     @Autowired
     ClearText clearText;
 
-    private final AuthenticationConfiguration authenticationConfiguration;
+    AuthenticationManager authenticationManager;
 
-    public AuthService(AuthenticationConfiguration authenticationConfiguration) {
-        this.authenticationConfiguration = authenticationConfiguration;
+    public AuthService(@Lazy AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -55,20 +55,22 @@ public class AuthService implements UserDetailsService {
         try {
             boolean mustPass = false;
 
-            AuthenticationManager authenticationManager = authenticationConfiguration.getAuthenticationManager();
+            String normalizedUsername = authDto.username().toUpperCase();
 
-            UsernamePasswordAuthenticationToken auth =
-                    new UsernamePasswordAuthenticationToken(authDto.username().toUpperCase(), authDto.password());
+            UsernamePasswordAuthenticationToken userAndPass =
+                    new UsernamePasswordAuthenticationToken(normalizedUsername, authDto.password());
 
-            Authentication authenticate = authenticationManager.authenticate(auth);
+            Authentication authenticate = authenticationManager.authenticate(userAndPass);
 
-            String token = tokenService.generateToken((UserEntity) authenticate.getPrincipal());
+            UserEntity user = (UserEntity) authenticate.getPrincipal();
+
+            String token = tokenService.generateToken(user);
 
             if (passDefault.equals(authDto.password())) {
                 mustPass = true;
             }
 
-            return new AuthResponseDto(((UserEntity) authenticate.getPrincipal()).getName(), token, mustPass);
+            return new AuthResponseDto(user.getName(), token, mustPass);
         } catch (BadCredentialsException e) {
             throw e;
         } catch (Exception e) {
