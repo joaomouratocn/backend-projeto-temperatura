@@ -1,7 +1,6 @@
 package br.com.devjmcn.backend_projeto_temperatura.service;
 
 import br.com.devjmcn.backend_projeto_temperatura.infra.exception.custom.UserNameAlreadyRegisterException;
-import br.com.devjmcn.backend_projeto_temperatura.infra.security.PasswordHashGenerator;
 import br.com.devjmcn.backend_projeto_temperatura.infra.security.TokenService;
 import br.com.devjmcn.backend_projeto_temperatura.model.dtos.authentication.AuthDto;
 import br.com.devjmcn.backend_projeto_temperatura.model.dtos.authentication.AuthResponseDto;
@@ -21,6 +20,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,7 +33,7 @@ public class AuthService implements UserDetailsService {
     UserRepository userRepository;
 
     @Autowired
-    PasswordHashGenerator passwordHashGenerator;
+    PasswordEncoder passwordEncoder;
 
     @Autowired
     TokenService tokenService;
@@ -83,7 +84,7 @@ public class AuthService implements UserDetailsService {
             throw new UserNameAlreadyRegisterException("Usuário já cadastrado");
         }
 
-        String encryptedPassword = passwordHashGenerator.generateHash(passDefault);
+        String encryptedPassword = passwordEncoder.encode(passDefault);
 
         UserEntity newUser = new UserEntity(
                 clearText.normalizeText(registerDto.name().toUpperCase()),
@@ -96,5 +97,10 @@ public class AuthService implements UserDetailsService {
         userRepository.save(newUser);
 
         return new RegisterResponseDto("Cadastrado com sucesso");
+    }
+
+    public static void main(String[] args) {
+        var enc = new BCryptPasswordEncoder();
+        System.out.println(enc.encode("1234567"));
     }
 }

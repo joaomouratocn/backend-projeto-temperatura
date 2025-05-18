@@ -15,7 +15,7 @@ public class FormatDate {
         DateTimeFormatter formatter;
 
         LocalDateTime dateTime = Instant.ofEpochMilli(dateLong)
-                .atZone(ZoneId.systemDefault())
+                .atZone(ZoneId.of("America/Sao_Paulo"))
                 .toLocalDateTime();
 
         if (withHour) {
@@ -36,7 +36,7 @@ public class FormatDate {
                 : localDate.atStartOfDay();      // Se for começo do dia
 
         return localDateTime
-                .atZone(ZoneId.systemDefault())
+                .atZone(ZoneId.of("America/Sao_Paulo"))
                 .toInstant()
                 .toEpochMilli();
     }
