@@ -21,19 +21,19 @@ public class UnitController {
     private UnitService unitservice;
 
     @GetMapping
-    public ResponseEntity<List<UnitDto>> getUnits(){
+    public ResponseEntity<List<UnitDto>> getUnits() {
         List<UnitDto> unitDtoList = unitservice.getAllUnits();
         return ResponseEntity.ok(unitDtoList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UnitDto> getUnitName(@PathVariable @Validated UUID id){
+    public ResponseEntity<UnitDto> getUnitName(@PathVariable @Validated UUID id) {
         UnitDto unitDto = unitservice.getUnit(id);
         return ResponseEntity.ok(unitDto);
     }
 
     @GetMapping("/byuser")
-    public ResponseEntity<UnitDto> getUnitByUser(){
+    public ResponseEntity<UnitDto> getUnitByUser() {
         UnitDto unitDto = unitservice.getUnitByUser();
         return ResponseEntity.ok(unitDto);
     }
