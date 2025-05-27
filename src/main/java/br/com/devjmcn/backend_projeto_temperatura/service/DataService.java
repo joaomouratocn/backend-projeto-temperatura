@@ -1,5 +1,6 @@
 package br.com.devjmcn.backend_projeto_temperatura.service;
 
+import br.com.devjmcn.backend_projeto_temperatura.infra.exception.SuccessResponse;
 import br.com.devjmcn.backend_projeto_temperatura.infra.exception.custom.UnitNotFoundException;
 import br.com.devjmcn.backend_projeto_temperatura.infra.exception.custom.UserNotFoundException;
 import br.com.devjmcn.backend_projeto_temperatura.infra.security.AuthenticatedUserProvider;
@@ -8,7 +9,6 @@ import br.com.devjmcn.backend_projeto_temperatura.model.data.GetDataByUnit;
 import br.com.devjmcn.backend_projeto_temperatura.model.data.dtos.GetDataByUnitResponseDto;
 import br.com.devjmcn.backend_projeto_temperatura.model.data.dtos.GetDataIntervalDto;
 import br.com.devjmcn.backend_projeto_temperatura.model.data.dtos.SaveDataDto;
-import br.com.devjmcn.backend_projeto_temperatura.model.data.dtos.SaveResponseDto;
 import br.com.devjmcn.backend_projeto_temperatura.model.entitys.UnitEntity;
 import br.com.devjmcn.backend_projeto_temperatura.model.entitys.UserEntity;
 import br.com.devjmcn.backend_projeto_temperatura.repository.DataRepository;
@@ -36,19 +36,19 @@ public class DataService {
     @Autowired
     FormatDate formatDate;
 
-    public SaveResponseDto saveData(SaveDataDto saveDataDto) {
+    public SuccessResponse saveData(SaveDataDto saveDataDto) {
         UUID userId = authenticatedUserProvider.getUserId();
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         boolean isAdmin = userEntity.getRole() == UserRoles.ADMIN;
-        boolean isSameUnit = userEntity.getUnit().equals(saveDataDto.unitId());
+        boolean isSameUnit = userEntity.getUnit().equals(saveDataDto.unituuid());
 
         if (!isAdmin && !isSameUnit) {
             throw new RuntimeException("Usuário não tem permissão para inserir os dados nesta unidade");
         }
 
-        UnitEntity unitEntity = unitRepository.findById(saveDataDto.unitId())
+        UnitEntity unitEntity = unitRepository.findById(saveDataDto.unituuid())
                 .orElseThrow(() -> new UnitNotFoundException("Unit not found!"));
 
         DataEntity newData = new DataEntity(
@@ -64,7 +64,7 @@ public class DataService {
         );
 
         dataRepository.save(newData);
-        return new SaveResponseDto("Dados enviados com sucesso", unitEntity.getId().toString());
+        return new SuccessResponse("Dados enviados com sucesso");
     }
 
     public List<GetDataByUnitResponseDto> getDataByUnit(GetDataIntervalDto getDataIntervalDto) {

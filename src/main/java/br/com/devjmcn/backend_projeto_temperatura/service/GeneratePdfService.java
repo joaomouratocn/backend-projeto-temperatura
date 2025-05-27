@@ -66,7 +66,7 @@ public class GeneratePdfService {
     }
 
     public byte[] generateReportAll(GetDataIntervalDto received) {
-        List<UUID> unitIdList = unitService.getAllUnits().stream().map(UnitDto::id).toList();
+        List<UUID> unitIdList = unitService.getAllUnits().stream().map(UnitDto::uuid).toList();
 
         PDFMergerUtility merger = new PDFMergerUtility();
         ByteArrayOutputStream finalOutput = new ByteArrayOutputStream();

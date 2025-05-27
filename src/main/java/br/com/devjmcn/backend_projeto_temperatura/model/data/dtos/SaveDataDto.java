@@ -8,7 +8,7 @@ public record SaveDataDto(
         @NotNull
         long dateTime,
         @NotNull
-        UUID unitId,
+        UUID unituuid,
         @NotNull
         double refMin,
         @NotNull

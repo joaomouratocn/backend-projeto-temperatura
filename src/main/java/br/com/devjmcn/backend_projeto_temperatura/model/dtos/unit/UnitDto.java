@@ -8,7 +8,7 @@ import java.util.UUID;
 public record UnitDto(
      @NotNull
      @NotBlank
-     UUID id,
+     UUID uuid,
      @NotNull
      @NotBlank
      String name
