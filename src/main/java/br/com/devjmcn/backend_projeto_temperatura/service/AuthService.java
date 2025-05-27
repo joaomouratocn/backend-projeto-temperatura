@@ -25,7 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthService implements UserDetailsService {
+public class AuthService {
     @Value("${api.secret.pass.default}")
     private String passDefault;
 
@@ -41,21 +41,11 @@ public class AuthService implements UserDetailsService {
     @Autowired
     ClearText clearText;
 
+    @Autowired
     AuthenticationManager authenticationManager;
-
-    public AuthService(@Lazy AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    }
 
     public AuthResponseDto auth(AuthDto authDto) {
         try {
-            boolean mustPass = false;
-
             String normalizedUsername = authDto.username().toUpperCase();
 
             UsernamePasswordAuthenticationToken userAndPass =
@@ -67,9 +57,7 @@ public class AuthService implements UserDetailsService {
 
             String token = tokenService.generateToken(user);
 
-            if (passDefault.equals(authDto.password())) {
-                mustPass = true;
-            }
+            boolean mustPass = passDefault.equals(authDto.password());
 
             return new AuthResponseDto(user.getName(), token, mustPass);
         } catch (BadCredentialsException e) {
@@ -97,10 +85,5 @@ public class AuthService implements UserDetailsService {
         userRepository.save(newUser);
 
         return new RegisterResponseDto("Cadastrado com sucesso");
-    }
-
-    public static void main(String[] args) {
-        var enc = new BCryptPasswordEncoder();
-        System.out.println(enc.encode("1234567"));
     }
 }
