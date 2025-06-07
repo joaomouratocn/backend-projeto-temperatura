@@ -130,14 +130,13 @@ public class ReportController {
     })
     public ResponseEntity<FileSystemResource> exportCsv(
             @RequestParam @Validated String start,
-            @RequestParam @Validated String end,
-            @RequestParam @Validated UUID unit
+            @RequestParam @Validated String end
     ) {
 
         long convertedDateStart = formatDate.formatToMilli(start, false);
         long convertedDateEnd = formatDate.formatToMilli(end, true);
 
-        File file = exportCsvService.exportCsv(unit, convertedDateStart, convertedDateEnd);
+        File file = exportCsvService.exportCsv(convertedDateStart, convertedDateEnd);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=data.csv")
