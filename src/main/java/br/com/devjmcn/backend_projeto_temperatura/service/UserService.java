@@ -12,6 +12,7 @@ import br.com.devjmcn.backend_projeto_temperatura.util.ClearText;
 import br.com.devjmcn.backend_projeto_temperatura.util.UserRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -73,4 +74,15 @@ public class UserService {
 
         return new SuccessResponse("Cadastrado com sucesso");
     }
+
+
+//    public static void main(String[] args) {
+//        PasswordEncoder encoder = new BCryptPasswordEncoder();
+//
+//        String senha = "GERAR MINHA PRIMEIRA SENHA";
+//        String hash = encoder.encode(senha);
+//
+//        System.out.println("Senha: " + senha);
+//        System.out.println("Hash BCrypt: " + hash);
+//    }
 }
